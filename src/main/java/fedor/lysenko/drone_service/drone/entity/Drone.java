@@ -1,6 +1,8 @@
 package fedor.lysenko.drone_service.drone.entity;
 
 
+import net.bytebuddy.implementation.bind.annotation.Default;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,7 +16,7 @@ public class Drone {
     @Column(name = "model", nullable=false)
     private DroneModel model;
 
-    @Column(name = "weight_limit", nullable=false, precision = 2)
+    @Column(name = "weight_limit", nullable=false)
     private Integer weightLimit;
 
     @Column(name = "battery_capacity")
@@ -23,6 +25,9 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private DroneState state = DroneState.IDLE;
+
+    @Column(name = "weight_loaded")
+    private Integer weightLoaded = 0;
 
     public Drone(String serialNumber, DroneModel model, int weightLimit, byte batteryCapacity, DroneState state) {
         this.serialNumber = serialNumber;
@@ -33,7 +38,7 @@ public class Drone {
     }
 
     public Drone() {
-        System.out.println("I'm here!!!!!!!!!!!!!!!!!!!");
+        System.out.println("Drone constructor");
     }
 
 
@@ -63,5 +68,9 @@ public class Drone {
 
     public DroneState getState() {
         return state;
+    }
+
+    public Integer getWeightLoaded() {
+        return weightLoaded;
     }
 }
