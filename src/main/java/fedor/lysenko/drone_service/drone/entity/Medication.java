@@ -1,6 +1,8 @@
 package fedor.lysenko.drone_service.drone.entity;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,11 +24,18 @@ public class Medication {
 
     @Lob
     @Column(name = "clob_image")
-    private String image;
+    private MultipartFile image;
 
     @GeneratedValue
     @Id
     private Long id;
+
+    public Medication(String name, Integer weight, String code, String droneSerialNumber) {
+        this.name = name;
+        this.weight = weight;
+        this.code = code;
+        this.droneSerialNumber = droneSerialNumber;
+    }
 
     public String getName() {
         return name;
@@ -44,7 +53,7 @@ public class Medication {
         return droneSerialNumber;
     }
 
-    public String getImage() {
+    public MultipartFile getImage() {
         return image;
     }
 

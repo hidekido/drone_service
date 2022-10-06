@@ -50,6 +50,10 @@ public class Drone {
         this.state = state;
     }
 
+    public void setWeightLoaded(Integer weightLoaded) {
+        this.weightLoaded = weightLoaded;
+    }
+
     public String getSerialNumber() {
         return serialNumber;
     }

@@ -1,12 +1,12 @@
 package fedor.lysenko.drone_service.drone;
 
-import fedor.lysenko.drone_service.drone.dto.LoadDroneResponse;
+import fedor.lysenko.drone_service.drone.dto.MedicationLoadRequest;
 import fedor.lysenko.drone_service.drone.entity.Drone;
 import fedor.lysenko.drone_service.drone.entity.Medication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,35 +20,35 @@ public class DroneController {
 
     @Autowired
     public DroneController(DroneService droneService) {
-        System.out.println("Инит контроллера");
         this.droneService = droneService;
     }
 
-    @GetMapping("/info/{serialNumber}")
+    @GetMapping("/drones/{serialNumber}")
     public Drone getDrone(@PathVariable  String serialNumber){
         return droneService.getDroneBySerialNumber(serialNumber);
     }
 
-    @GetMapping("/info")
+    @GetMapping("/drones")
     public List<Drone> getAllDrones(){
         return droneService.getAllDrones();
     }
 
     //todo все хуйня, переделать эндпоинты
-    @PostMapping("/actions/new")
+    @PostMapping("/drones")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createDrone(@RequestBody Drone drone){
         droneService.createDrone(drone);
     }
 
-    @PostMapping("/actions/new-all")
-    public void createAllDrones(@RequestBody List<Drone> drone){
-        droneService.createDrone(drone);
+    @PostMapping("/medications")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void loadMedication(@RequestBody MedicationLoadRequest request){
+        droneService.loadDrone(request);
     }
 
-    @PostMapping("/actions/load")
-    public ResponseEntity<LoadDroneResponse> loadMedication(@RequestBody Medication newMedication){
-        droneService.loadDrone(newMedication);
-        LoadDroneResponse loadDroneResponse = new LoadDroneResponse();
-        return new ResponseEntity<>(loadDroneResponse, HttpStatus.CREATED);
+    @GetMapping("/medications/{serialNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Medication> findAllMedicationsLoadedByDroneBySerialNumber(@PathVariable String serialNumber){
+        return droneService.findAllMedicationsLoadedByDroneBySerialNumber(serialNumber);
     }
 }
