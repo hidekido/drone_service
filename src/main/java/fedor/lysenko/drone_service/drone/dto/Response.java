@@ -1,7 +1,16 @@
 package fedor.lysenko.drone_service.drone.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class Response {
 
     public enum Status{
@@ -10,36 +19,7 @@ public class Response {
     }
 
     private Status status;
-    private LocalDateTime timestamp = LocalDateTime.now();
-
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private String message;
 
-    public Response(Status status, String message) {
-        this.status = status;
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
 }

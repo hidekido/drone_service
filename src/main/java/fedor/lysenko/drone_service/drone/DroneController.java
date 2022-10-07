@@ -1,30 +1,27 @@
 package fedor.lysenko.drone_service.drone;
 
+import fedor.lysenko.drone_service.drone.dto.DroneRegisterRequest;
 import fedor.lysenko.drone_service.drone.dto.MedicationLoadRequest;
 import fedor.lysenko.drone_service.drone.entity.Drone;
 import fedor.lysenko.drone_service.drone.entity.Medication;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
-@RequestMapping("api/v1/drones")
+@RequestMapping("api/v1")
+@Validated
 public class DroneController {
-
-
-
     private final DroneService droneService;
 
-    @Autowired
-    public DroneController(DroneService droneService) {
-        this.droneService = droneService;
-    }
-
     @GetMapping("/drones/{serialNumber}")
-    public Drone getDrone(@PathVariable  String serialNumber){
+    public Drone getDrone(@PathVariable @Valid @NotNull String serialNumber){
         return droneService.getDroneBySerialNumber(serialNumber);
     }
 
@@ -33,16 +30,21 @@ public class DroneController {
         return droneService.getAllDrones();
     }
 
-    //todo все хуйня, переделать эндпоинты
-    @PostMapping("/drones")
+    @GetMapping("/drones/available")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Drone> getAllDronesAvailableForLoad(){
+        return droneService.getAllDronesAvailableForLoad();
+    }
+
+    @PostMapping(path = "/drones")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createDrone(@RequestBody Drone drone){
+    public void createDrone(@RequestBody @Valid @NotNull DroneRegisterRequest drone){
         droneService.createDrone(drone);
     }
 
     @PostMapping("/medications")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void loadMedication(@RequestBody MedicationLoadRequest request){
+    public void loadMedication(@RequestBody @Valid @NotNull MedicationLoadRequest request){
         droneService.loadDrone(request);
     }
 

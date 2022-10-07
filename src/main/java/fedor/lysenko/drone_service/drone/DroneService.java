@@ -1,37 +1,45 @@
 package fedor.lysenko.drone_service.drone;
 
+import fedor.lysenko.drone_service.drone.api.DroneApi;
 import fedor.lysenko.drone_service.drone.configuration.DroneServiceConfiguration;
 import fedor.lysenko.drone_service.drone.dao.DroneDAO;
 import fedor.lysenko.drone_service.drone.dao.MedicationDAO;
+import fedor.lysenko.drone_service.drone.dto.DroneRegisterRequest;
 import fedor.lysenko.drone_service.drone.dto.MedicationLoadRequest;
 import fedor.lysenko.drone_service.drone.entity.Drone;
 import fedor.lysenko.drone_service.drone.entity.Medication;
 import fedor.lysenko.drone_service.drone.exception.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class DroneService {
 
     private final DroneDAO droneDAO;
     private final MedicationDAO medicationDAO;
     private final DroneServiceConfiguration droneServiceConfiguration;
-
-    @Autowired
-    public DroneService(DroneDAO droneDAO, MedicationDAO medicationDAO, DroneServiceConfiguration droneServiceConfiguration) {
-        this.droneDAO = droneDAO;
-        this.medicationDAO = medicationDAO;
-        this.droneServiceConfiguration = droneServiceConfiguration;
-    }
-
+    private final DroneApi droneApi;
 
     public List<Drone> getAllDrones(){
         List<Drone> result = new ArrayList<>();
         droneDAO.findAll().forEach(result::add);
+        return result;
+    }
+
+    public List<Drone> getAllDronesAvailableForLoad(){
+        List<Drone> result = new ArrayList<>();
+        droneDAO.findAll().forEach(drone -> {
+            if(drone.getWeightLoaded() < drone.getWeightLimit() &&
+                    drone.getBatteryCapacity() >= droneServiceConfiguration.droneBatteryLimitForLoad){
+                result.add(drone);
+            }
+        });
         return result;
     }
 
@@ -44,15 +52,24 @@ public class DroneService {
         return drone.get();
     }
 
-    public void createDrone(Drone drone) {
+    public void createDrone(DroneRegisterRequest drone) {
         if(droneDAO.findById(drone.getSerialNumber()).isPresent()){
             String exceptionBuilder = "Drone #" + drone.getSerialNumber() + " already registered!";
             throw new DroneAlreadyRegisteredException(exceptionBuilder);
         }
-        droneDAO.save(drone);
+
+        byte battery = droneApi.getBattery(drone.getSerialNumber());
+
+        Drone newDrone = Drone.builder().serialNumber(drone.getSerialNumber())
+                .weightLimit(drone.getWeightLimit())
+                .model(drone.getModel())
+                .batteryCapacity(battery)
+                .build();
+
+        droneDAO.save(newDrone);
     }
 
-
+    @Transactional
     public void loadDrone(MedicationLoadRequest newMedicationRequest){
         Optional<Drone> optionalCurrentDrone = droneDAO.findById(newMedicationRequest.getDroneSerialNumber());
 
@@ -76,15 +93,18 @@ public class DroneService {
             throw new DroneOverloadedException(exceptionBuilder);
         }
 
-        Medication newMedication = new Medication(newMedicationRequest.getName(),
-                newMedicationRequest.getWeight(), newMedicationRequest.getCode(),
-                newMedicationRequest.getDroneSerialNumber());
+        Medication newMedication = Medication.builder()
+                .droneSerialNumber(newMedicationRequest.getDroneSerialNumber())
+                .code(newMedicationRequest.getCode())
+                .image(newMedicationRequest.getImage())
+                .weight(newMedicationRequest.getWeight())
+                .name(newMedicationRequest.getName())
+                .build();
 
         medicationDAO.save(newMedication);
         currentDrone.setWeightLoaded(usedWeight);
         droneDAO.save(currentDrone);
-        //fakeDroneAPI.load(); todo
-
+        droneApi.load(newMedication);
     }
 
     public List<Medication> findAllMedicationsLoadedByDroneBySerialNumber(String droneSerialNumber){
