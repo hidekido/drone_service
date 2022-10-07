@@ -13,9 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -52,6 +50,7 @@ public class DroneService {
         return drone.get();
     }
 
+    @Transactional
     public void createDrone(DroneRegisterRequest drone) {
         if(droneDAO.findById(drone.getSerialNumber()).isPresent()){
             String exceptionBuilder = "Drone #" + drone.getSerialNumber() + " already registered!";
@@ -123,4 +122,16 @@ public class DroneService {
         return medications;
     }
 
+    @Transactional
+    public Map<String, Byte> checkDronesBattery(){
+        Map<String, Byte> allDronesBattery = new HashMap<>();
+
+        for(Drone drone : droneDAO.findAll()){
+            byte battery = droneApi.getBattery(drone.getSerialNumber());
+            drone.setBatteryCapacity(battery);
+            allDronesBattery.put(drone.getSerialNumber(), drone.getBatteryCapacity());
+            droneDAO.save(drone);
+        }
+        return allDronesBattery;
+    }
 }
