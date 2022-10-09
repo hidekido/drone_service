@@ -21,7 +21,7 @@ public class DroneRegisterRequest {
     @Size(min=1, max=100, message = "Serial number should be shorter or equal 100 characters")
     private String serialNumber;
 
-    //todo might be good idea to handle enum mapping exceptions in Jackson Object mapper
+    //todo might be a good idea to handle enum mapping exceptions in Jackson Object mapper
     @NotNull(message = "Drone model should not be empty")
     private DroneModel model;
 

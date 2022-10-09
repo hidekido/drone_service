@@ -27,6 +27,7 @@ public class MedicationLoadRequest {
 
     @NotNull(message = "Medication code should not be null")
     @Min(value = 1, message = "Medication weight should be at least 1g")
+    @Max(value = 500, message = "Max value for field weight is 500")
     private Integer weight;
 
     @NotBlank(message = "Medication name should not be blank")

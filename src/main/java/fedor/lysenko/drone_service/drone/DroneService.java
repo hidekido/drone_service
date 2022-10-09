@@ -57,7 +57,7 @@ public class DroneService {
             throw new DroneAlreadyRegisteredException(exceptionBuilder);
         }
 
-        byte battery = droneApi.getBattery(drone.getSerialNumber());
+        byte battery = droneApi.getBatteryNew(drone.getSerialNumber());
 
         Drone newDrone = Drone.builder().serialNumber(drone.getSerialNumber())
                 .weightLimit(drone.getWeightLimit())
@@ -127,7 +127,7 @@ public class DroneService {
         Map<String, Byte> allDronesBattery = new HashMap<>();
 
         for(Drone drone : droneDAO.findAll()){
-            byte battery = droneApi.getBattery(drone.getSerialNumber());
+            byte battery = droneApi.getBattery(drone);
             drone.setBatteryCapacity(battery);
             allDronesBattery.put(drone.getSerialNumber(), drone.getBatteryCapacity());
             droneDAO.save(drone);
