@@ -1,10 +1,7 @@
 package fedor.lysenko.drone_service.drone.dto;
 
 import fedor.lysenko.drone_service.drone.entity.DroneModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
@@ -14,6 +11,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Validated
+@Builder
 public class DroneRegisterRequest {
 
     @NotBlank(message = "Serial number should not be blank")

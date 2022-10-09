@@ -74,6 +74,10 @@ To build this solution you need
 - After you cloned it, it is better to open the project with IDE (for my case it is Intellij IDEA)
 - Use pom.xml to collect all dependencies
 - Run maven build to start project.
+- For simple start, use **/api/v1/test** request(POST) to generate 10 test drones.
+
+Note that the JPA property is set to **spring.jpa.hibernate.ddl-auto=create-drop**, which means if you restart the project, the whole DB will be recreated.
+
 ---
 ### Entities
 This service is focused on storing only required data. That's why it is designed to store registered drones and loaded Medications.
@@ -99,12 +103,13 @@ To test API I recommend you to use Postman, **or** to use Swagger UI by followin
 http://localhost:8080/swagger-ui/index.html#
 
 List of possible requests:
-- Get request to obtain a list of all drones **/api/v1/drones**
-- Get request to obtain a certain drone **/api/v1/drones/{serialNumber}**
-- Post request to register a new drone **/api/v1/drones**
-- Post request to load medication on a drone **/api/v1/medications**
-- Get request to obtain a list of drones available for loading **/api/v1/drones/available**
-- Get request to obtain a list of Medications loaded on a certain load **/api/v1/medications/{serialNumber}**
+- GET request to obtain a list of all drones **/api/v1/drones**
+- GET request to obtain a certain drone **/api/v1/drones/{serialNumber}**
+- POST request to register a new drone **/api/v1/drones**
+- POST request to load medication on a drone **/api/v1/medications**
+- GET request to obtain a list of drones available for loading **/api/v1/drones/available**
+- GET request to obtain a list of Medications loaded on a certain load **/api/v1/medications/{serialNumber}**
+- POST request to generate 10 test drones **/api/v1/test**
 
 The required JSON structure for each request is better to get from Swagger / Swagger UI
 

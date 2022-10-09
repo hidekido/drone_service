@@ -53,4 +53,10 @@ public class DroneController {
     public List<Medication> findAllMedicationsLoadedByDroneBySerialNumber(@PathVariable String serialNumber){
         return droneService.findAllMedicationsLoadedByDroneBySerialNumber(serialNumber);
     }
+
+    @PostMapping("/test")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void generateTestData(){
+        droneService.generateTestData();
+    }
 }

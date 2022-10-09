@@ -7,6 +7,8 @@ import fedor.lysenko.drone_service.drone.dao.MedicationDAO;
 import fedor.lysenko.drone_service.drone.dto.DroneRegisterRequest;
 import fedor.lysenko.drone_service.drone.dto.MedicationLoadRequest;
 import fedor.lysenko.drone_service.drone.entity.Drone;
+import fedor.lysenko.drone_service.drone.entity.DroneModel;
+import fedor.lysenko.drone_service.drone.entity.DroneState;
 import fedor.lysenko.drone_service.drone.entity.Medication;
 import fedor.lysenko.drone_service.drone.exception.*;
 import lombok.AllArgsConstructor;
@@ -133,5 +135,20 @@ public class DroneService {
             droneDAO.save(drone);
         }
         return allDronesBattery;
+    }
+
+    public void generateTestData(){
+        List<DroneRegisterRequest> testRequests = new ArrayList<>();
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.LIGHTWEIGHT).serialNumber("DRONE1_TEST").weightLimit(100).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.LIGHTWEIGHT).serialNumber("DRONE2_TEST").weightLimit(150).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.LIGHTWEIGHT).serialNumber("DRONE3_TEST").weightLimit(115).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.MIDDLEWEIGHT).serialNumber("DRONE4_TEST").weightLimit(200).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.MIDDLEWEIGHT).serialNumber("DRONE5_TEST").weightLimit(180).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.MIDDLEWEIGHT).serialNumber("DRONE6_TEST").weightLimit(210).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.HEAVYWEIGHT).serialNumber("DRONE7_TEST").weightLimit(250).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.HEAVYWEIGHT).serialNumber("DRONE8_TEST").weightLimit(300).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.HEAVYWEIGHT).serialNumber("DRONE9_TEST").weightLimit(400).build());
+        testRequests.add(DroneRegisterRequest.builder().model(DroneModel.CRUISERWEIGHT).serialNumber("DRONE10_TEST").weightLimit(500).build());
+        testRequests.forEach(this::createDrone);
     }
 }
